@@ -1,1 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santi Resells</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Orbitron', sans-serif; color: #fff; background: #000; overflow-x: hidden; }
+        #video-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+        body::before { content: ""; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: -1; }
 
+        /* ANNOUNCEMENT BANNER */
+        .announcement-banner { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); }
+        .banner-track { display: flex; animation: slideLeft 25s linear infinite; white-space: nowrap; }
+        .banner-text { font-size: 12px; font-weight: 600; color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.7); padding: 0 60px; letter-spacing: 3px; text-transform: uppercase; }
+        @keyframes slideLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* ENTER SCREEN */
+        .enter-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 22px; color: #fff; text-transform: uppercase; z-index: 10; text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.4); animation: pulse 2s infinite; pointer-events: none; letter-spacing: 4px; }
+        .enter-text.hide { animation: fadeOut 0.5s ease-out forwards; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes fadeOut { to { opacity: 0; pointer-events: none; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* MAIN SITE */
+        #site { display: none; opacity: 0; }
+        #site.show { display: block; animation: fadeIn 0.8s ease forwards; }
+
+        /* HEADER / NAV */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 80px 60px 30px; position: relative; z-index: 2; }
+        .logo { font-size: 28px; font-weight: 800; letter-spacing: 6px; text-transform: uppercase; text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+        .logo span { color: #777; font-size: 12px; display: block; font-weight: 400; letter-spacing: 4px; margin-top: 4px; }
+        nav { display: flex; gap: 32px; }
+        nav a { color: #777; font-size: 11px; letter-spacing: 3px; text-decoration: none; text-transform: uppercase; transition: color 0.3s, text-shadow 0.3s; }
+        nav a:hover { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.7); }
+
+        /* HERO */
+        .hero { text-align: center; padding: 60px 20px 40px; position: relative; z-index: 2; }
+        .hero h1 { font-size: clamp(36px, 7vw, 80px); font-weight: 800; letter-spacing: 8px; text-transform: uppercase; line-height: 1; text-shadow: 0 0 40px rgba(255,255,255,0.3); }
+        .hero p { color: #666; font-size: 12px; letter-spacing: 4px; margin-top: 16px; text-transform: uppercase; }
+        .divider { width: 60px; height: 1px; background: rgba(255,255,255,0.2); margin: 24px auto; }
+
+        /* SHOP SECTION */
+        .shop { padding: 20px 60px 80px; position: relative; z-index: 2; }
+        .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .shop-header h2 { font-size: 12px; letter-spacing: 5px; color: #555; text-transform: uppercase; }
+        .shop-header span { font-size: 11px; letter-spacing: 3px; color: #444; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+
+        .product-card { background: rgba(15,15,15,0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px); transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
+        .product-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.25); box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+
+        .product-img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: rgba(30,30,30,0.8); }
+        .product-img-placeholder { width: 100%; aspect-ratio: 1; background: rgba(25,25,25,0.9); display: flex; align-items: center; justify-content: center; font-size: 48px; color: rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.06); }
+
+        .product-info { padding: 18px 20px; }
+        .product-tag { font-size: 9px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 6px; }
+        .product-name { font-size: 14px; font-weight: 600; letter-spacing: 2px; color: #ddd; margin-bottom: 8px; line-height: 1.4; }
+        .product-desc { font-size: 10px; color: #555; letter-spacing: 1px; line-height: 1.6; margin-bottom: 16px; font-family: 'Orbitron', sans-serif; }
+        .product-footer { display: flex; justify-content: space-between; align-items: center; }
+        .product-price { font-size: 18px; font-weight: 800; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.4); }
+        .product-price.sale { color: #fff; }
+        .product-price .original { font-size: 11px; color: #444; text-decoration: line-through; margin-left: 6px; font-weight: 400; }
+        .buy-btn { padding: 8px 18px; border-radius: 8px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-family: 'Orbitron', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; text-decoration: none; }
+        .buy-btn:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.35); box-shadow: 0 0 20px rgba(255,255,255,0.15); }
+
+        /* BADGE */
+        .badge { display: inline-block; font-size: 8px; letter-spacing: 2px; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; }
+        .badge-hot { background: rgba(255,60,60,0.15); border: 1px solid rgba(255,60,60,0.3); color: #ff6b6b; }
+        .badge-new { background: rgba(60,255,150,0.1); border: 1px solid rgba(60,255,150,0.25); color: #5effc0; }
+        .badge-sale { background: rgba(255,200,60,0.1); border: 1px solid rgba(255,200,60,0.25); color: #ffd166; }
+
+        /* FOOTER */
+        footer { text-align: center; padding: 30px; color: #333; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; border-top: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 2; }
+
+        /* SETTINGS */
+        .settings-btn-float { position: fixed; bottom: 30px; right: 30px; width: 48px; height: 48px; border-radius: 12px; background: rgba(15,15,15,0.8); border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; transition: all 0.3s; backdrop-filter: blur(10px); }
+        .settings-btn-float:hover { border-color: rgba(255,255,255,0.3); box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+        .settings-btn-float svg { width: 20px; height: 20px; fill: none; stroke: #777; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.3s, stroke 0.3s; }
+        .settings-btn-float:hover svg { transform: rotate(90deg); stroke: #fff; }
+        .settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 199; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .settings-overlay.show { opacity: 1; pointer-events: all; }
+        .settings-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); width: 380px; background: rgba(15,15,15,0.97); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 28px; z-index: 200; transition: transform 0.3s; }
+        .settings-popup.show { transform: translate(-50%,-50%) scale(1); }
+        .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .settings-header h2 { font-size: 16px; letter-spacing: 4px; }
+        .close-btn { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,0,0,0.2); border: 1px solid rgba(255,0,0,0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+        .close-btn:hover { background: rgba(255,0,0,0.4); }
+        .close-btn svg { width: 14px; height: 14px; stroke: #fff; stroke-width: 2; stroke-linecap: round; fill: none; }
+        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255,255,255,0.04); border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.06); }
+        .setting-label { font-size: 12px; letter-spacing: 2px; color: #aaa; display: flex; align-items: center; gap: 10px; }
+        .setting-label svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .toggle-switch { position: relative; width: 52px; height: 26px; background: rgba(255,255,255,0.15); border-radius: 13px; cursor: pointer; transition: background 0.3s; }
+        .toggle-switch.active { background: rgba(255,255,255,0.4); box-shadow: 0 0 12px rgba(255,255,255,0.2); }
+        .toggle-slider { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: transform 0.3s; }
+        .toggle-switch.active .toggle-slider { transform: translateX(26px); }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 20px; padding: 80px 24px 20px; text-align: center; }
+            .shop { padding: 20px 24px 60px; }
+            .product-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+
+<video id="video-background" autoplay muted loop playsinline>
+    <source src="https://image2url.com/r2/default/videos/1772681574946-d1319abe-cd46-43c9-8f11-647462551bea.mp4">
+</video>
+<audio id="bgmusic" src="https://image2url.com/r2/default/audio/1772681692591-6c2dad30-bb7b-48b7-84ab-b0706d666c55.mp3" loop preload="auto"></audio>
+
+<!-- BANNER -->
+<div class="announcement-banner">
+    <div class="banner-track">
+        <span class="banner-text">✦ Free shipping on all orders ✦ Trusted reseller ✦ Fast delivery ✦ Secure checkout ✦ Best prices guaranteed</span>
+        <span class="banner-text">✦ Free shipping on all orders ✦ Trusted reseller ✦ Fast delivery ✦ Secure checkout ✦ Best prices guaranteed</span>
+    </div>
+</div>
+
+<!-- ENTER -->
+<div class="enter-text" id="enterText">Click anywhere to enter</div>
+
+<!-- SETTINGS OVERLAY -->
+<div class="settings-overlay" id="settingsOverlay" onclick="toggleSettings()"></div>
+<div class="settings-popup" id="settingsPopup">
+    <div class="settings-header">
+        <h2>Settings</h2>
+        <div class="close-btn" onclick="toggleSettings()">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+    </div>
+    <div class="setting-item">
+        <div class="setting-label">
+            <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+            Background Music
+        </div>
+        <div class="toggle-switch active" id="musicToggle" onclick="toggleMusic()">
+            <div class="toggle-slider"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN SITE -->
+<div id="site">
+    <header>
+        <div class="logo">
+            Santi Resells
+            <span>Premium Shop</span>
+        </div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Shop</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>The Shop</h1>
+        <div class="divider"></div>
+        <p>Premium resells — best prices, fast delivery</p>
+    </section>
+
+    <section class="shop">
+        <div class="shop-header">
+            <h2>All Products</h2>
+            <span>Updated regularly</span>
+        </div>
+
+        <div class="product-grid">
+
+            <!-- PRODUCT 1 -->
+            <div class="product-card">
+                <div class="product-img-placeholder">◈</div>
+                <div class="product-info">
+                    <div class="badge badge-hot">Hot</div>
+                    <div class="product-tag">Category</div>
+                    <div class="product-name">Product Name Here</div>
+                    <div class="product-desc">Short description of the product goes here. Keep it clean.</div>
+                    <div class="product-footer">
+                        <div class="product-price">$XX</div>
+                        <a href="#" class="buy-btn">Buy Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUCT 2 -->
+            <div class="product-card">
+                <div class="product-img-placeholder">◈</div>
+                <div class="product-info">
+                    <div class="badge badge-new">New</div>
+                    <div class="product-tag">Category</div>
+                    <div class="product-name">Product Name Here</div>
+                    <div class="product-desc">Short description of the product goes here. Keep it clean.</div>
+                    <div class="product-footer">
+                        <div class="product-price">$XX</div>
+                        <a href="#" class="buy-btn">Buy Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUCT 3 -->
+            <div class="product-card">
+                <div class="product-img-placeholder">◈</div>
+                <div class="product-info">
+                    <div class="badge badge-sale">Sale</div>
+                    <div class="product-tag">Category</div>
+                    <div class="product-name">Product Name Here</div>
+                    <div class="product-desc">Short description of the product goes here. Keep it clean.</div>
+                    <div class="product-footer">
+                        <div class="product-price sale">$XX <span class="original">$XX</span></div>
+                        <a href="#" class="buy-btn">Buy Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUCT 4 -->
+            <div class="product-card">
+                <div class="product-img-placeholder">◈</div>
+                <div class="product-info">
+                    <div class="product-tag">Category</div>
+                    <div class="product-name">Product Name Here</div>
+                    <div class="product-desc">Short description of the product goes here. Keep it clean.</div>
+                    <div class="product-footer">
+                        <div class="product-price">$XX</div>
+                        <a href="#" class="buy-btn">Buy Now</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>SANTI RESELLS 2026® — All rights reserved</footer>
+</div>
+
+<!-- FLOATING SETTINGS BTN -->
+<div class="settings-btn-float" onclick="toggleSettings()">
+    <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+</div>
+
+<script>
+    const music = document.getElementById('bgmusic');
+    music.volume = 0.1;
+    let hasEntered = false, musicEnabled = true;
+
+    document.addEventListener('click', (e) => {
+        if (hasEntered) return;
+        if (e.target.closest('#settingsPopup') || e.target.closest('.settings-btn-float')) return;
+        hasEntered = true;
+        document.getElementById('enterText').classList.add('hide');
+        setTimeout(() => {
+            const site = document.getElementById('site');
+            site.classList.add('show');
+        }, 400);
+        if (musicEnabled) {
+            music.currentTime = 193;
+            music.play().catch(() => {});
+        }
+    });
+
+    function toggleSettings() {
+        document.getElementById('settingsPopup').classList.toggle('show');
+        document.getElementById('settingsOverlay').classList.toggle('show');
+    }
+
+    function toggleMusic() {
+        const toggle = document.getElementById('musicToggle');
+        musicEnabled = !musicEnabled;
+        toggle.classList.toggle('active');
+        if (musicEnabled) {
+            music.play().catch(() => {});
+        } else {
+            music.pause();
+        }
+    }
+</script>
+</body>
+</html>
