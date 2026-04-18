@@ -17,15 +17,15 @@
         .banner-text { font-size: 12px; font-weight: 600; color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.7); padding: 0 60px; letter-spacing: 3px; text-transform: uppercase; }
         @keyframes slideLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* PRELOAD SCREEN */
-        #preload { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: #000; transition: opacity 0.6s ease; }
-        #preload.hide { opacity: 0; pointer-events: none; }
-        #preload img { max-width: 100%; max-height: 100%; object-fit: contain; cursor: pointer; }
+        /* ENTER SCREEN */
+        .enter-text { display: none; }
+        .enter-text.hide { animation: fadeOut 0.5s ease-out forwards; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes fadeOut { to { opacity: 0; pointer-events: none; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 
         /* MAIN SITE */
-        #site { display: none; opacity: 0; }
-        #site.show { display: block; animation: fadeIn 0.8s ease forwards; }
+        #site { display: block; animation: fadeIn 0.8s ease forwards; }
 
         /* HEADER / NAV */
         header { display: flex; justify-content: space-between; align-items: center; padding: 80px 60px 30px; position: relative; z-index: 2; }
@@ -119,10 +119,8 @@
     </div>
 </div>
 
-<!-- PRELOAD GIF -->
-<div id="preload" onclick="enterSite()">
-    <img src="https://www.image2url.com/r2/default/images/1776550028284-4ba1c05c-f54d-45c9-bf95-e21f0b623b0a.gif" alt="Enter">
-</div>
+<!-- ENTER -->
+<div class="enter-text" id="enterText">Click To Verify</div>
 
 <!-- SETTINGS OVERLAY -->
 <div class="settings-overlay" id="settingsOverlay" onclick="toggleSettings()"></div>
@@ -238,16 +236,15 @@
     const music = { play: ()=>{}, pause: ()=>{} };
     let hasEntered = false, musicEnabled = false;
 
-    function enterSite() {
+    document.addEventListener('click', (e) => {
         if (hasEntered) return;
+        if (e.target.closest('#settingsPopup') || e.target.closest('.settings-btn-float')) return;
         hasEntered = true;
-        const preload = document.getElementById('preload');
-        preload.classList.add('hide');
+        document.getElementById('enterText').classList.add('hide');
         setTimeout(() => {
-            preload.style.display = 'none';
             document.getElementById('site').classList.add('show');
-        }, 600);
-    }
+        }, 400);
+    });
 
     function toggleSettings() {
         document.getElementById('settingsPopup').classList.toggle('show');
