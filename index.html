@@ -97,10 +97,33 @@
         .toggle-slider { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: transform 0.3s; }
         .toggle-switch.active .toggle-slider { transform: translateX(26px); }
 
+        /* PRODUCT PANEL */
+        .panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
+        .panel-overlay.show { opacity: 1; pointer-events: all; }
+        .product-panel { position: fixed; right: -520px; top: 0; height: 100%; width: 480px; max-width: 95vw; background: rgba(10,10,10,0.98); border-left: 1px solid rgba(255,255,255,0.1); z-index: 301; transition: right 0.4s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; padding: 32px 28px; }
+        .product-panel.show { right: 0; }
+        .panel-close { position: absolute; top: 20px; right: 20px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,0,0,0.2); border: 1px solid rgba(255,0,0,0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+        .panel-close:hover { background: rgba(255,0,0,0.4); }
+        .panel-close svg { width: 14px; height: 14px; stroke: #fff; stroke-width: 2; stroke-linecap: round; fill: none; }
+        .panel-img { width: 100%; border-radius: 12px; object-fit: cover; aspect-ratio: 1; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.08); }
+        .panel-badge { display: inline-block; font-size: 8px; letter-spacing: 2px; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; margin-bottom: 10px; background: rgba(255,60,60,0.15); border: 1px solid rgba(255,60,60,0.3); color: #ff6b6b; }
+        .panel-name { font-size: 20px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+        .panel-price { font-size: 24px; font-weight: 800; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.4); margin-bottom: 20px; }
+        .panel-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.08); margin: 20px 0; }
+        .panel-section-label { font-size: 9px; letter-spacing: 4px; color: #555; text-transform: uppercase; margin-bottom: 12px; }
+        .panel-desc { font-size: 11px; color: #777; line-height: 1.8; letter-spacing: 1px; margin-bottom: 20px; }
+        .size-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+        .size-btn { padding: 8px 14px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #888; font-family: 'Orbitron', sans-serif; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+        .size-btn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+        .size-btn.selected { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.5); color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.1); }
+        .panel-buy-btn { width: 100%; padding: 16px; border-radius: 10px; background: #fff; border: none; color: #000; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; margin-top: 8px; }
+        .panel-buy-btn:hover { background: #ddd; box-shadow: 0 0 30px rgba(255,255,255,0.2); }
+
         @media (max-width: 768px) {
             header { flex-direction: column; gap: 20px; padding: 80px 24px 20px; text-align: center; }
             .shop { padding: 20px 24px 60px; }
             .product-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+            .product-panel { width: 100%; right: -100%; }
         }
     </style>
 </head>
@@ -121,6 +144,36 @@
 
 <!-- ENTER -->
 <div class="enter-text" id="enterText">Click To Verify</div>
+
+<!-- PRODUCT PANEL OVERLAY -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+
+<!-- PRODUCT PANEL -->
+<div class="product-panel" id="productPanel">
+    <div class="panel-close" onclick="closePanel()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </div>
+    <img class="panel-img" src="https://www.image2url.com/r2/default/images/1776550951354-68fda901-1f2c-439b-82eb-3c358ea24223.jpg" alt="Balenciaga Slides">
+    <div class="panel-badge">Hot</div>
+    <div class="panel-name">Balenciaga Slides</div>
+    <div class="panel-price">$XX</div>
+    <div class="panel-divider"></div>
+    <div class="panel-section-label">Description</div>
+    <div class="panel-desc">The Balenciaga Pool Slides are the ultimate fusion of luxury and comfort. Crafted with a thick, contoured footbed that molds to your foot, they deliver cloud-like cushioning with every step. The wide strap sits securely across the foot without digging in, making them perfect for all-day wear. Whether you're lounging at home, hitting the beach, or running errands, these slides keep your feet feeling fresh. The premium rubber sole provides superior grip and durability, while the iconic Balenciaga branding elevates any fit effortlessly.</div>
+    <div class="panel-divider"></div>
+    <div class="panel-section-label">Select Size (US)</div>
+    <div class="size-grid">
+        <div class="size-btn" onclick="selectSize(this)">6</div>
+        <div class="size-btn" onclick="selectSize(this)">7</div>
+        <div class="size-btn" onclick="selectSize(this)">8</div>
+        <div class="size-btn" onclick="selectSize(this)">9</div>
+        <div class="size-btn" onclick="selectSize(this)">10</div>
+        <div class="size-btn" onclick="selectSize(this)">11</div>
+        <div class="size-btn" onclick="selectSize(this)">12</div>
+        <div class="size-btn" onclick="selectSize(this)">13</div>
+    </div>
+    <button class="panel-buy-btn" onclick="handleBuy()">Buy Now</button>
+</div>
 
 <!-- SETTINGS OVERLAY -->
 <div class="settings-overlay" id="settingsOverlay" onclick="toggleSettings()"></div>
@@ -162,7 +215,7 @@
 
         <div class="product-grid">
 
-            <div class="product-card">
+            <div class="product-card" onclick="openPanel()">
                 <img class="product-img" src="https://www.image2url.com/r2/default/images/1776550951354-68fda901-1f2c-439b-82eb-3c358ea24223.jpg" alt="Balenciaga Slides">
                 <div class="product-info">
                     <div class="badge badge-hot">Hot</div>
@@ -170,7 +223,7 @@
                     <div class="product-name">Balenciaga Slides</div>
                     <div class="product-desc">Short description of the product goes here. Keep it clean.</div>
                     <div class="product-footer">
-                        <div class="product-price">$120</div>
+                        <div class="product-price">$XX</div>
                         <a href="#" class="buy-btn">Buy Now</a>
                     </div>
                 </div>
@@ -245,7 +298,27 @@
         }, 400);
     });
 
-    function toggleSettings() {
+    function openPanel() {
+        document.getElementById('productPanel').classList.add('show');
+        document.getElementById('panelOverlay').classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    function closePanel() {
+        document.getElementById('productPanel').classList.remove('show');
+        document.getElementById('panelOverlay').classList.remove('show');
+        document.body.style.overflow = '';
+    }
+    function selectSize(el) {
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+    function handleBuy() {
+        const selected = document.querySelector('.size-btn.selected');
+        if (!selected) { alert('Please select a size first!'); return; }
+        window.open('#', '_blank');
+    }
+
+    
         document.getElementById('settingsPopup').classList.toggle('show');
         document.getElementById('settingsOverlay').classList.toggle('show');
     }
