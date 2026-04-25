@@ -142,6 +142,9 @@ nav a:hover{color:#fff}
 .cp-checkout:hover{background:#e0e0e0}
 .cp-checkout:disabled{background:var(--gray2);color:var(--gray4);cursor:not-allowed}
 
+/* DUST CANVAS */
+#dustCanvas{position:fixed;inset:0;pointer-events:none;z-index:700}
+
 /* TOAST */
 .toast{position:fixed;bottom:32px;left:50%;transform:translate(-50%,0);background:rgba(18,18,18,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:12px 22px;font-size:11px;letter-spacing:2px;color:#fff;z-index:900;opacity:0;pointer-events:none;transition:opacity 0.3s;white-space:nowrap;backdrop-filter:blur(12px)}
 .toast.on{opacity:1}
@@ -174,7 +177,9 @@ footer{text-align:center;padding:28px;color:var(--gray4);font-size:9px;letter-sp
 </head>
 <body>
 
-<video id="vbg" autoplay muted loop playsinline>
+<canvas id="dustCanvas"></canvas>
+
+<video id="vbg" autoplay muted loop playsinline style="filter:saturate(1.2) brightness(0.9)">
   <source src="https://www.image2url.com/r2/default/videos/1776216692006-c06da3f9-49fe-4fe9-81c5-d413d18b4f72.mp4">
 </video>
 
@@ -320,15 +325,16 @@ footer{text-align:center;padding:28px;color:var(--gray4);font-size:9px;letter-sp
         <div class="card-quick">Quick View</div>
       </div>
 
-      <!-- PRODUCT 2 -->
-      <div class="card">
-        <div class="card-img-wrap"><div class="card-placeholder">◈</div></div>
+      <!-- PRODUCT 2 — ESSENTIALS SHORTS -->
+      <div class="card" onclick="openDrawer('essentials')">
+        <div class="card-img-wrap">
+          <img class="card-img" src="https://www.image2url.com/r2/default/files/1777156078600-2265451c-646b-46d6-b025-cb770605ea2c.jpg" alt="Essentials Shorts">
+        </div>
         <div class="card-body">
-          <div class="card-brand">Brand</div>
-          <div class="card-name">Product Name Here</div>
+          <div class="card-brand">Essentials</div>
+          <div class="card-name">Shorts</div>
           <div class="card-bottom">
-            <div class="card-price">$XX</div>
-            <span class="card-tag tag-new">New</span>
+            <div class="card-price">$75</div>
           </div>
         </div>
         <div class="card-quick">Quick View</div>
@@ -379,6 +385,17 @@ const products = {
     colors: [{label:'Black',bg:'#111',border:'#444'},{label:'White',bg:'#f5f5f5',border:'#ccc'},{label:'Sand',bg:'#8B7355',border:'#8B7355'},{label:'Brown',bg:'#5a3e2b',border:'#5a3e2b'}],
     sizes: ['6','7','8','9','10','11','12'],
     oos: ['13']
+  },
+  essentials: {
+    img: 'https://www.image2url.com/r2/default/files/1777156078600-2265451c-646b-46d6-b025-cb770605ea2c.jpg',
+    brand: 'Essentials', name: 'Shorts', price: 75, tag: 'New', tagClass: 'tag-new',
+    desc: 'Fear of God Essentials Shorts built for effortless style and all-day comfort. Made from a heavyweight cotton blend with a relaxed fit and elastic waistband. The subtle Essentials branding keeps it clean while the quality speaks for itself — a wardrobe staple that pairs with everything.',
+    colors: [
+      {label:'Cream',bg:'#e8dcc8',border:'#c9b99a', img:'https://www.image2url.com/r2/default/files/1777156078600-2265451c-646b-46d6-b025-cb770605ea2c.jpg'},
+      {label:'Gray',bg:'#8a8a8a',border:'#666', img:'https://www.image2url.com/r2/default/files/1777156134649-d93718ee-4dc9-4e36-9b79-77aa9cdbe747.jpg'}
+    ],
+    sizes: ['XS','S','M','L','XL','XXL'],
+    oos: []
   }
 };
 
@@ -412,6 +429,7 @@ function openDrawer(id) {
     el.style.background = c.bg;
     el.style.border = '2px solid ' + c.border;
     el.dataset.color = c.label;
+    if (c.img) el.dataset.img = c.img;
     el.title = c.label;
     el.onclick = function(){ selectColor(this); };
     cr.appendChild(el);
@@ -466,6 +484,16 @@ function selectColor(el) {
   el.classList.add('active');
   selectedColor = el.dataset.color;
   document.getElementById('colorLabel').textContent = selectedColor;
+  // Swap drawer image if color has its own image
+  if (el.dataset.img) {
+    const dimg = document.getElementById('d-img');
+    dimg.style.opacity = '0';
+    dimg.style.transition = 'opacity 0.3s';
+    setTimeout(() => {
+      dimg.src = el.dataset.img;
+      dimg.style.opacity = '1';
+    }, 300);
+  }
 }
 
 function selectSize(el) {
@@ -498,8 +526,14 @@ function buyNow() {
 }
 
 function removeFromCart(i) {
-  cart.splice(i, 1);
-  updateCart();
+  const body = document.getElementById('cpBody');
+  const items = body.querySelectorAll('.cp-item');
+  const el = items[i];
+  if (!el) { cart.splice(i,1); updateCart(); return; }
+  dustExplode(el, () => {
+    cart.splice(i, 1);
+    updateCart();
+  });
 }
 
 function updateCart() {
@@ -544,6 +578,79 @@ function toggleSettings() {
   document.getElementById('sPopup').classList.toggle('on');
   document.getElementById('sOverlay').classList.toggle('on');
 }
+
+/* ── DUST EXPLOSION ── */
+const dustCanvas = document.getElementById('dustCanvas');
+const dctx = dustCanvas.getContext('2d');
+let dustParticles = [];
+let dustRAF = null;
+
+function resizeDust() {
+  dustCanvas.width = window.innerWidth;
+  dustCanvas.height = window.innerHeight;
+}
+resizeDust();
+window.addEventListener('resize', resizeDust);
+
+function dustExplode(el, onDone) {
+  const rect = el.getBoundingClientRect();
+  const count = 120;
+  el.style.transition = 'opacity 0.15s';
+  el.style.opacity = '0';
+
+  for (let k = 0; k < count; k++) {
+    const cx = rect.left + Math.random() * rect.width;
+    const cy = rect.top + Math.random() * rect.height;
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 0.5 + Math.random() * 3.5;
+    const size = 1.5 + Math.random() * 3;
+    const life = 0.6 + Math.random() * 0.6;
+    const grey = Math.floor(180 + Math.random() * 75);
+    dustParticles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - Math.random() * 1.5,
+      size, life, maxLife: life,
+      color: `rgb(${grey},${grey},${grey})`
+    });
+  }
+
+  if (!dustRAF) animateDust();
+  setTimeout(() => { if (onDone) onDone(); }, 500);
+}
+
+function animateDust() {
+  dctx.clearRect(0, 0, dustCanvas.width, dustCanvas.height);
+  dustParticles = dustParticles.filter(p => p.life > 0);
+  dustParticles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.08;
+    p.vx *= 0.97;
+    p.life -= 0.018;
+    const alpha = Math.max(0, p.life / p.maxLife);
+    dctx.globalAlpha = alpha;
+    dctx.fillStyle = p.color;
+    dctx.beginPath();
+    dctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+    dctx.fill();
+  });
+  dctx.globalAlpha = 1;
+  if (dustParticles.length > 0) {
+    dustRAF = requestAnimationFrame(animateDust);
+  } else {
+    dustRAF = null;
+  }
+}
+
+/* ── LIVE VIDEO SHIMMER (subtle color shift) ── */
+const vbg = document.getElementById('vbg');
+let hueShift = 0;
+setInterval(() => {
+  hueShift = Math.sin(Date.now() / 4000) * 8;
+  const brightness = 0.85 + Math.sin(Date.now() / 3000) * 0.06;
+  vbg.style.filter = `saturate(1.3) brightness(${brightness}) hue-rotate(${hueShift}deg)`;
+}, 50);
 </script>
 </body>
 </html>
