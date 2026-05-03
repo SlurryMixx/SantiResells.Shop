@@ -163,7 +163,7 @@ footer{text-align:center;padding:28px;color:var(--gray4);font-size:9px;letter-sp
 
 <canvas id="dustCanvas"></canvas>
 
-<video id="vbg" autoplay muted loop playsinline style="filter:saturate(1.2) brightness(0.9)">
+<video id="vbg" autoplay muted playsinline style="filter:saturate(1.2) brightness(0.9)">
   <source src="https://www.image2url.com/r2/default/videos/1777832895695-d3eee61e-0ab8-4c87-8035-cc9e8913a852.mp4">
 </video>
 
@@ -274,7 +274,7 @@ footer{text-align:center;padding:28px;color:var(--gray4);font-size:9px;letter-sp
 
       <div class="card" onclick="openDrawer('balenciaga')">
         <div class="card-img-wrap">
-          <img class="card-img" src="https://www.image2url.com/r2/default/images/1776550951354-68fda901-1f2c-439b-82eb-3c358ea24223.jpg" alt="Balenciaga Slides">
+          <img class="card-img" src="https://www.image2url.com/r2/default/images/1777833784812-487608b3-853a-4e01-ab85-2d8c3464bceb.png" alt="Balenciaga Slides">
         </div>
         <div class="card-body">
           <div class="card-brand">Balenciaga</div>
@@ -289,7 +289,7 @@ footer{text-align:center;padding:28px;color:var(--gray4);font-size:9px;letter-sp
 
       <div class="card" onclick="openDrawer('essentials')">
         <div class="card-img-wrap">
-          <img class="card-img" src="https://www.image2url.com/r2/default/files/1777156078600-2265451c-646b-46d6-b025-cb770605ea2c.jpg" alt="Essentials Shorts">
+          <img class="card-img" src="https://www.image2url.com/r2/default/images/1777833906108-f0e5a0b3-45ec-4fd0-97b3-eca57f3efdeb.png" alt="Essentials Shorts">
         </div>
         <div class="card-body">
           <div class="card-brand">Essentials</div>
@@ -338,7 +338,7 @@ footer{text-align:center;padding:28px;color:var(--gray4);font-size:9px;letter-sp
 <script>
 const products = {
   balenciaga: {
-    img: 'https://www.image2url.com/r2/default/images/1776550951354-68fda901-1f2c-439b-82eb-3c358ea24223.jpg',
+    img: 'https://www.image2url.com/r2/default/images/1777833784812-487608b3-853a-4e01-ab85-2d8c3464bceb.png',
     brand: 'Balenciaga', name: 'Pool Slides', price: 120, tag: 'Hot', tagClass: 'tag-hot',
     desc: 'The Balenciaga Pool Slides are the ultimate fusion of luxury and comfort. Crafted with a thick, contoured footbed that molds to your foot, they deliver cloud-like cushioning with every step. The wide strap sits securely without digging in — perfect for all-day wear. Premium rubber sole provides superior grip and durability, while the iconic branding elevates any fit.',
     colors: [{label:'Black',bg:'#111',border:'#444'},{label:'White',bg:'#f5f5f5',border:'#ccc'},{label:'Sand',bg:'#8B7355',border:'#8B7355'},{label:'Brown',bg:'#5a3e2b',border:'#5a3e2b'}],
@@ -346,12 +346,12 @@ const products = {
     oos: ['13']
   },
   essentials: {
-    img: 'https://www.image2url.com/r2/default/files/1777156078600-2265451c-646b-46d6-b025-cb770605ea2c.jpg',
+    img: 'https://www.image2url.com/r2/default/images/1777833906108-f0e5a0b3-45ec-4fd0-97b3-eca57f3efdeb.png',
     brand: 'Essentials', name: 'Shorts', price: 75, tag: 'New', tagClass: 'tag-new',
     desc: 'Fear of God Essentials Shorts built for effortless style and all-day comfort. Made from a heavyweight cotton blend with a relaxed fit and elastic waistband. The subtle Essentials branding keeps it clean while the quality speaks for itself — a wardrobe staple that pairs with everything.',
     colors: [
-      {label:'Cream',bg:'#e8dcc8',border:'#c9b99a', img:'https://www.image2url.com/r2/default/files/1777156078600-2265451c-646b-46d6-b025-cb770605ea2c.jpg'},
-      {label:'Gray',bg:'#8a8a8a',border:'#666', img:'https://www.image2url.com/r2/default/files/1777156134649-d93718ee-4dc9-4e36-9b79-77aa9cdbe747.jpg'}
+      {label:'Cream',bg:'#e8dcc8',border:'#c9b99a'},
+      {label:'Gray',bg:'#8a8a8a',border:'#666'}
     ],
     sizes: ['XS','S','M','L','XL','XXL'],
     oos: []
@@ -377,7 +377,7 @@ function openDrawer(id) {
   document.getElementById('d-desc').textContent = p.desc;
   document.getElementById('d-tag').textContent = p.tag;
   document.getElementById('d-tag').className = 'd-tag ' + p.tagClass;
-  document.getElementById('colorLabel').textContent = selectedColor;
+  document.getElementById('colorLabel').textContent = p.name + ' — ' + selectedColor;
 
   const cr = document.getElementById('colorRow');
   cr.innerHTML = '';
@@ -440,7 +440,8 @@ function selectColor(el) {
   document.querySelectorAll('#colorRow .swatch').forEach(s => s.classList.remove('active'));
   el.classList.add('active');
   selectedColor = el.dataset.color;
-  document.getElementById('colorLabel').textContent = selectedColor;
+  const p = products[currentProduct];
+  document.getElementById('colorLabel').textContent = p.name + ' — ' + selectedColor;
   if (el.dataset.img) {
     const dimg = document.getElementById('d-img');
     dimg.style.opacity = '0';
@@ -573,6 +574,7 @@ function animateDust() {
 }
 
 const vbg = document.getElementById('vbg');
+vbg.addEventListener('timeupdate', () => { if (vbg.currentTime >= 16.36) vbg.currentTime = 0; });
 setInterval(() => {
   const hueShift = Math.sin(Date.now() / 4000) * 8;
   const brightness = 0.85 + Math.sin(Date.now() / 3000) * 0.06;
