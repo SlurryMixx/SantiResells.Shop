@@ -156,7 +156,56 @@ footer{text-align:center;padding:28px;color:#fff;font-size:9px;letter-spacing:5p
   .grid{grid-template-columns:repeat(2,1fr)}
   .drawer{width:100%}
   .cart-panel{width:100%}
+  .modal-box{width:92%;padding:28px 22px}
+  .ticket-wrap{width:95%;padding:28px 18px}
 }
+
+@keyframes modalIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:800;display:none;backdrop-filter:blur(8px)}
+.modal-overlay.on{display:block}
+.modal-box{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:480px;max-width:95vw;background:#111;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:36px 40px;z-index:801;animation:modalIn 0.3s ease both}
+.modal-icon{font-size:36px;margin-bottom:16px;text-align:center}
+.modal-title{font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;text-transform:uppercase;color:#fff;text-align:center;margin-bottom:18px}
+.modal-body{font-size:12px;color:rgba(255,255,255,0.75);line-height:1.9;letter-spacing:0.4px;text-align:center;margin-bottom:28px}
+.modal-actions{display:flex;gap:12px;flex-direction:column}
+.btn-agree{padding:14px;border-radius:8px;background:#fff;border:none;color:#000;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;width:100%}
+.btn-agree:hover{background:#e0e0e0}
+.btn-decline{padding:14px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;width:100%}
+.btn-decline:hover{border-color:rgba(255,60,60,0.4);color:#ff7070}
+
+.name-input-field{width:100%;padding:14px 16px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:#fff;font-family:'Inter',sans-serif;font-size:13px;letter-spacing:1px;outline:none;transition:border-color 0.2s;margin-bottom:20px}
+.name-input-field:focus{border-color:rgba(255,255,255,0.45)}
+.name-input-field::placeholder{color:rgba(255,255,255,0.3)}
+
+.ticket-overlay{position:fixed;inset:0;background:#000;z-index:900;display:none;overflow-y:auto;padding:40px 20px}
+.ticket-overlay.on{display:block}
+.ticket-wrap{max-width:520px;margin:0 auto;background:#0d0d0d;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:40px 44px;position:relative}
+.ticket-header{text-align:center;margin-bottom:32px;padding-bottom:24px;border-bottom:1px dashed rgba(255,255,255,0.1)}
+.ticket-logo{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:800;letter-spacing:6px;color:#fff;margin-bottom:4px}
+.ticket-sub{font-size:9px;letter-spacing:4px;color:rgba(255,255,255,0.4);text-transform:uppercase}
+.ticket-badge{display:inline-block;margin-top:14px;padding:5px 14px;border-radius:99px;background:rgba(60,220,130,0.1);border:1px solid rgba(60,220,130,0.25);color:#5effc0;font-size:9px;letter-spacing:3px;text-transform:uppercase;font-weight:600}
+.ticket-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.ticket-label{font-size:9px;letter-spacing:3px;color:rgba(255,255,255,0.35);text-transform:uppercase}
+.ticket-val{font-size:13px;color:#fff;font-weight:500;text-align:right;max-width:60%}
+.ticket-divider{height:1px;background:rgba(255,255,255,0.07);margin:20px 0}
+.ticket-items{margin-bottom:4px}
+.ticket-item{display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.ticket-item:last-child{border-bottom:none}
+.ticket-item-img{width:52px;height:52px;border-radius:6px;object-fit:cover;border:1px solid rgba(255,255,255,0.08);flex-shrink:0}
+.ticket-item-info{flex:1}
+.ticket-item-brand{font-size:8px;letter-spacing:3px;color:rgba(255,255,255,0.35);text-transform:uppercase;margin-bottom:2px}
+.ticket-item-name{font-size:12px;color:#fff;font-weight:500;margin-bottom:3px}
+.ticket-item-meta{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.5px}
+.ticket-item-price{font-size:13px;color:#fff;font-weight:600;flex-shrink:0}
+.ticket-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1)}
+.ticket-total-label{font-size:10px;letter-spacing:3px;color:rgba(255,255,255,0.4);text-transform:uppercase}
+.ticket-total-val{font-size:22px;font-weight:700;color:#fff}
+.ticket-footer{margin-top:28px;text-align:center;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.2);text-transform:uppercase;line-height:1.8}
+.ticket-notice{margin-top:20px;padding:14px 18px;border-radius:8px;background:rgba(255,190,50,0.06);border:1px solid rgba(255,190,50,0.2);font-size:10px;color:rgba(255,190,50,0.8);letter-spacing:0.5px;line-height:1.7;text-align:center}
+.ticket-close-btn{display:block;margin:28px auto 0;padding:13px 32px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);font-family:'Inter',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.ticket-close-btn:hover{border-color:rgba(255,60,60,0.4);color:#ff7070}
+.ticket-hint{text-align:center;margin-top:16px;font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:1px}
 </style>
 </head>
 <body>
@@ -476,7 +525,69 @@ function addToCart() {
 
 function buyNow() {
   if (!selectedSize) { showToast('Please select a size'); return; }
-  window.open('#', '_blank');
+  const p = products[currentProduct];
+  if (!cart.find(i => i.id === currentProduct && i.size === selectedSize && i.color === selectedColor)) {
+    cart.push({ id: currentProduct, name: p.name, brand: p.brand, price: p.price, img: p.img, size: selectedSize, color: selectedColor });
+    updateCart();
+  }
+  closeDrawer();
+  document.getElementById('warningOverlay').classList.add('on');
+}
+
+function agreeWarning() {
+  document.getElementById('warningOverlay').classList.remove('on');
+  document.getElementById('nameOverlay').classList.add('on');
+  document.getElementById('buyerName').value = '';
+  setTimeout(() => document.getElementById('buyerName').focus(), 100);
+}
+
+function declineWarning() {
+  document.getElementById('warningOverlay').classList.remove('on');
+}
+
+function closeNameModal() {
+  document.getElementById('nameOverlay').classList.remove('on');
+  document.getElementById('warningOverlay').classList.add('on');
+}
+
+function finalizeTicket() {
+  const name = document.getElementById('buyerName').value.trim();
+  if (!name) { document.getElementById('buyerName').style.borderColor='rgba(255,60,60,0.5)'; setTimeout(()=>document.getElementById('buyerName').style.borderColor='',1200); return; }
+  document.getElementById('nameOverlay').classList.remove('on');
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  const ticketId = 'SB-' + now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + '-' + Math.floor(Math.random()*9000+1000);
+
+  document.getElementById('ticketId').textContent = ticketId;
+  document.getElementById('ticketDate').textContent = dateStr + ' at ' + timeStr;
+  document.getElementById('ticketName').textContent = name;
+
+  const itemsEl = document.getElementById('ticketItems');
+  itemsEl.innerHTML = '';
+  cart.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'ticket-item';
+    div.innerHTML = `<img class="ticket-item-img" src="${item.img}" alt="${item.name}">
+      <div class="ticket-item-info">
+        <div class="ticket-item-brand">${item.brand}</div>
+        <div class="ticket-item-name">${item.name}</div>
+        <div class="ticket-item-meta">Size ${item.size} · ${item.color}</div>
+      </div>
+      <div class="ticket-item-price">$${item.price}</div>`;
+    itemsEl.appendChild(div);
+  });
+
+  const total = cart.reduce((s,i)=>s+i.price,0);
+  document.getElementById('ticketTotal').textContent = '$' + total.toFixed(2);
+  document.getElementById('ticketOverlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeTicket() {
+  document.getElementById('ticketOverlay').classList.remove('on');
+  document.body.style.overflow = '';
 }
 
 function removeFromCart(i) {
@@ -581,5 +692,62 @@ setInterval(() => {
   vbg.style.filter = `saturate(1.3) brightness(${brightness}) hue-rotate(${hueShift}deg)`;
 }, 50);
 </script>
+<div class="modal-overlay" id="warningOverlay">
+  <div class="modal-box">
+    <div class="modal-icon">⚠️</div>
+    <div class="modal-title">Before You Continue</div>
+    <div class="modal-body">Once you take this ticket to us <strong>ALL SALES ARE FINAL</strong>. We do not support online purchases at the moment but we are looking to work on that soon — that's why we made this ticket system.</div>
+    <div class="modal-actions">
+      <button class="btn-agree" onclick="agreeWarning()">I Agree</button>
+      <button class="btn-decline" onclick="declineWarning()">Go Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="nameOverlay">
+  <div class="modal-box">
+    <div class="modal-icon">🎫</div>
+    <div class="modal-title">Almost There</div>
+    <div class="modal-body">Enter your name so we know who the ticket belongs to.</div>
+    <input class="name-input-field" id="buyerName" type="text" placeholder="Your full name" maxlength="60">
+    <div class="modal-actions">
+      <button class="btn-agree" onclick="finalizeTicket()">Finalize Purchase</button>
+      <button class="btn-decline" onclick="closeNameModal()">Go Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="ticket-overlay" id="ticketOverlay">
+  <div class="ticket-wrap" id="ticketWrap">
+    <div class="ticket-header">
+      <div class="ticket-logo">S&amp;B Resells</div>
+      <div class="ticket-sub">Premium Shop</div>
+      <div class="ticket-badge">✦ Purchase Ticket</div>
+    </div>
+    <div class="ticket-row">
+      <span class="ticket-label">Ticket ID</span>
+      <span class="ticket-val" id="ticketId">—</span>
+    </div>
+    <div class="ticket-row">
+      <span class="ticket-label">Date</span>
+      <span class="ticket-val" id="ticketDate">—</span>
+    </div>
+    <div class="ticket-row">
+      <span class="ticket-label">Name</span>
+      <span class="ticket-val" id="ticketName">—</span>
+    </div>
+    <div class="ticket-divider"></div>
+    <div class="ticket-items" id="ticketItems"></div>
+    <div class="ticket-total-row">
+      <span class="ticket-total-label">Total</span>
+      <span class="ticket-total-val" id="ticketTotal">$0.00</span>
+    </div>
+    <div class="ticket-notice">⚠️ All sales are final. Bring this ticket to us in person to complete your purchase.</div>
+    <div class="ticket-footer">S&amp;B Resells 2026® — This ticket is valid for in-person pickup only</div>
+    <div class="ticket-hint">📸 Screenshot this ticket and send it to us</div>
+    <button class="ticket-close-btn" onclick="closeTicket()">Close</button>
+  </div>
+</div>
+
 </body>
 </html>
